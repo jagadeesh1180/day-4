@@ -124,3 +124,55 @@ MIT
 FactoryPulse is deliberately narrow: **edge-native operational intelligence for resource-constrained MSME factories**. The product combines anomaly detection, interpretable risk, maintenance evidence and energy signals in one local workflow. The edge boundary is a product requirement, not a deployment afterthought.
 
 For Phase 2, the isolated inference adapter is the integration point for the official Kompact AI Runtime. We will report measured latency, CPU, memory, throughput and offline behaviour rather than inventing benchmark numbers.
+
+
+## Repository guide
+
+| File | Purpose |
+|---|---|
+| `app.py` | Streamlit application and analysis pipeline |
+| `sample_telemetry.csv` | Reproducible six-machine demo input |
+| `tests/test_smoke.py` | Automated core behaviour tests |
+| `.github/workflows/ci.yml` | Continuous integration |
+| `ARCHITECTURE.md` | System/data-flow architecture |
+| `SUBMISSION.md` | Phase-1 submission narrative |
+| `DEMO_SCRIPT.md` | Short presentation script |
+| `docs/FINAL_REPORT.md` | Full technical report |
+| `docs/EVALUATION_READINESS.md` | Judge-facing evaluation preparation |
+| `docs/DATA_SCHEMA.md` | Input contract and validation rules |
+| `docs/DEMO_CHECKLIST.md` | Reproducible judge demo procedure |
+| `docs/ROADMAP.md` | Completed work and future work |
+| `DOES_NOT_CLAIM.md` | Evidence/claim boundary |
+| `SECURITY.md` | Security and privacy guidance |
+| `LICENSE` | MIT license |
+
+## Clean-room / challenge boundary
+
+This repository represents the Phase-1 portfolio project. It does **not** pretend that the unavailable Phase-2 Kompact runtime has already been used.
+
+If selected for Phase 2, the team should create the challenge implementation during the permitted challenge period and preserve the portfolio repository as historical evidence. This keeps the Phase-2 fresh-code requirement auditable.
+
+## Reproduce locally
+
+    python -m venv .venv
+    # Linux/macOS:
+    source .venv/bin/activate
+    # Windows:
+    # .venv\Scripts\activate
+
+    pip install -r requirements.txt
+    pip install -r requirements-dev.txt
+
+    pytest -q
+    streamlit run app.py
+
+Or:
+
+    docker build -t factorypulse-edge .
+    docker run --rm -p 8501:8501 factorypulse-edge
+
+Upload `sample_telemetry.csv` from the sidebar to reproduce the documented multi-machine scenario.
+
+## Production caution
+
+FactoryPulse is a decision-support prototype, not a certified safety system. Maintenance decisions must remain under qualified human supervision until the system is validated on real equipment and approved for the relevant operating environment.
