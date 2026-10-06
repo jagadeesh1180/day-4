@@ -58,3 +58,16 @@ All Phase 2 implementation will follow the official fresh-code requirement.
 ### Repository
 
 https://github.com/jagadeesh1180/day-4
+
+
+## Evaluation and evidence posture
+
+The public challenge information does not publish a detailed numeric judging rubric. We therefore prepared for the dimensions most likely to matter in technical screening: real-world problem relevance, meaningful AI/ML use, edge efficiency, usability, correctness, engineering quality, reproducibility, privacy, and credible evidence. See `docs/EVALUATION_READINESS.md`.
+
+The repository deliberately separates:
+- **measured/current:** local software behaviour and local anomaly-pipeline timing;
+- **simulated:** synthetic telemetry used for the portfolio demo;
+- **estimated:** energy-waste heuristic;
+- **future:** Kompact performance and real factory validation.
+
+This distinction is part of the product's engineering quality, not a disclaimer added after the fact.

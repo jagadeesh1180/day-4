@@ -46,3 +46,20 @@ def test_probable_cause_is_actionable():
     data = analyze(make_demo_data(n=60))
     cause = probable_cause(data.iloc[-1], data)
     assert isinstance(cause, str) and len(cause) > 5
+
+
+def test_validate_rejects_non_numeric_and_invalid_ranges():
+    base = {
+        "timestamp": ["2026-01-01"],
+        "temperature_c": [60],
+        "vibration_mm_s": [2],
+        "power_kw": [7],
+        "load_pct": [70],
+    }
+    bad_numeric = pd.DataFrame({**base, "power_kw": ["bad"]})
+    with pytest.raises(ValueError, match="power_kw"):
+        validate(bad_numeric)
+
+    bad_load = pd.DataFrame({**base, "load_pct": [101]})
+    with pytest.raises(ValueError, match="load_pct"):
+        validate(bad_load)

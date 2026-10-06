@@ -9,6 +9,8 @@ from sklearn.ensemble import IsolationForest
 st.set_page_config(page_title="FactoryPulse Edge", page_icon="⚙️", layout="wide")
 
 REQUIRED = {"timestamp", "temperature_c", "vibration_mm_s", "power_kw", "load_pct"}
+NUMERIC_COLUMNS = ["temperature_c", "vibration_mm_s", "power_kw", "load_pct"]
+MAX_UPLOAD_ROWS = 100_000
 
 @st.cache_data
 def make_demo_data(n=480, seed=42):
@@ -41,6 +43,10 @@ def make_demo_data(n=480, seed=42):
     return pd.concat(frames, ignore_index=True)
 
 def validate(df):
+    if not isinstance(df, pd.DataFrame):
+        raise ValueError("Telemetry input must be a CSV table.")
+    if len(df) > MAX_UPLOAD_ROWS:
+        raise ValueError(f"Telemetry file is too large. Maximum supported rows: {MAX_UPLOAD_ROWS:,}.")
     missing = REQUIRED - set(df.columns)
     if missing:
         raise ValueError("Missing columns: " + ", ".join(sorted(missing)))
@@ -50,8 +56,20 @@ def validate(df):
         raise ValueError("timestamp contains invalid dates.")
     if "machine_id" not in df.columns:
         df["machine_id"] = "M-01"
+    df["machine_id"] = df["machine_id"].fillna("M-01").astype(str).str.strip()
+    if (df["machine_id"] == "").any():
+        raise ValueError("machine_id contains empty values.")
+    for column in NUMERIC_COLUMNS:
+        df[column] = pd.to_numeric(df[column], errors="coerce")
+        if df[column].isna().any():
+            raise ValueError(f"{column} contains non-numeric or missing values.")
+        if not np.isfinite(df[column].to_numpy()).all():
+            raise ValueError(f"{column} contains non-finite values.")
+    if (df["vibration_mm_s"] < 0).any() or (df["power_kw"] < 0).any():
+        raise ValueError("vibration_mm_s and power_kw cannot be negative.")
+    if ((df["load_pct"] < 0) | (df["load_pct"] > 100)).any():
+        raise ValueError("load_pct must be between 0 and 100.")
     return df.sort_values(["machine_id", "timestamp"]).reset_index(drop=True)
-
 def score_machine(group):
     group = group.copy()
     features = ["temperature_c", "vibration_mm_s", "power_kw", "load_pct"]
@@ -70,8 +88,8 @@ def score_machine(group):
     return group
 
 def analyze(df):
-    return df.groupby("machine_id", group_keys=False).apply(score_machine).reset_index(drop=True)
-
+    parts = [score_machine(group) for _, group in df.groupby("machine_id", sort=False)]
+    return pd.concat(parts, ignore_index=True)
 def machine_state(row):
     if row.risk_score >= 75 or row.anomaly:
         return "🔴 CRITICAL"
