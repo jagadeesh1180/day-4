@@ -96,17 +96,24 @@ def probable_cause(row, history):
     return "Unclassified multi-signal anomaly"
 
 def energy_insights(df):
-    by_machine = df.groupby("machine_id").agg(
-        avg_kw=("power_kw", "mean"),
-        peak_kw=("power_kw", "max"),
-        hours=("power_kw", "size")
+    """Estimate excess energy against each machine's own robust local baseline."""
+    rows = []
+    for machine_id, group in df.groupby("machine_id"):
+        group = group.sort_values("timestamp")
+        baseline = group["power_kw"].rolling(24, min_periods=6).median()
+        excess_kw = (group["power_kw"] - baseline).clip(lower=0).fillna(0)
+        rows.append({
+            "machine_id": machine_id,
+            "avg_kw": group["power_kw"].mean(),
+            "peak_kw": group["power_kw"].max(),
+            "hours": len(group),
+            "baseline_kw": baseline.median() if baseline.notna().any() else group["power_kw"].median(),
+            "estimated_excess_kwh": excess_kw.sum(),
+            "estimated_waste_rupees": excess_kw.sum() * 8.5,
+        })
+    return pd.DataFrame(rows).set_index("machine_id").sort_values(
+        "estimated_waste_rupees", ascending=False
     )
-    by_machine["baseline_kw"] = by_machine["avg_kw"].rolling(3, min_periods=1).median()
-    by_machine["estimated_excess_kwh"] = (
-        (by_machine["avg_kw"] - by_machine["baseline_kw"]).clip(lower=0) * by_machine["hours"]
-    )
-    by_machine["estimated_waste_rupees"] = by_machine["estimated_excess_kwh"] * 8.5
-    return by_machine.sort_values("estimated_waste_rupees", ascending=False)
 
 def local_or_edge_explanation(row, history):
     base_url = os.getenv("AI_BASE_URL", "").strip()

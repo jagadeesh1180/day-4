@@ -2,7 +2,7 @@ name: FactoryPulse CI
 
 on:
   push:
-    branches: [main]
+    branches: [main, hackathon-final]
   pull_request:
 
 jobs:
