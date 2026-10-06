@@ -88,8 +88,8 @@ def score_machine(group):
     return group
 
 def analyze(df):
-    return df.groupby("machine_id", group_keys=False, sort=False).apply(score_machine, include_groups=False).reset_index(drop=True)
-
+    parts = [score_machine(group) for _, group in df.groupby("machine_id", sort=False)]
+    return pd.concat(parts, ignore_index=True)
 def machine_state(row):
     if row.risk_score >= 75 or row.anomaly:
         return "🔴 CRITICAL"
