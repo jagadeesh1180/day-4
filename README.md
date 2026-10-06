@@ -109,3 +109,18 @@ See DOES_NOT_CLAIM.md. FactoryPulse never presents simulated savings, synthetic 
 ## License
 
 MIT
+
+
+## Submission readiness
+
+- **Reproducible demo:** `sample_telemetry.csv` contains multiple machines and an intentionally abnormal operating window.
+- **Automated validation:** `pytest -q` covers input validation, six-machine demo generation, anomaly scoring, energy estimation and maintenance-cause output.
+- **Continuous integration:** GitHub Actions runs compilation and the smoke suite on pushes and pull requests.
+- **Energy methodology:** waste is estimated against each machine's own rolling power baseline, avoiding a cross-machine baseline.
+- **Evidence discipline:** synthetic telemetry, heuristic savings estimates and future Kompact measurements are explicitly labelled; no production claims are presented as measured facts.
+
+## Judge-facing differentiation
+
+FactoryPulse is deliberately narrow: **edge-native operational intelligence for resource-constrained MSME factories**. The product combines anomaly detection, interpretable risk, maintenance evidence and energy signals in one local workflow. The edge boundary is a product requirement, not a deployment afterthought.
+
+For Phase 2, the isolated inference adapter is the integration point for the official Kompact AI Runtime. We will report measured latency, CPU, memory, throughput and offline behaviour rather than inventing benchmark numbers.
