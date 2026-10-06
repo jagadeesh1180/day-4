@@ -1,33 +1,60 @@
 # Build Next 2026 — Phase 1 Portfolio Submission
 
-## Project
-**FactoryPulse Edge AI — Privacy-First Factory Intelligence for MSMEs**
+## FactoryPulse Edge
 
-## Problem
-Small and medium-sized factories generate machine telemetry but often lack affordable predictive-maintenance and energy-intelligence systems. Cloud-only AI can add recurring inference costs and create data-sovereignty concerns.
+**Autonomous, privacy-first factory intelligence for MSMEs**
 
-## Solution
-FactoryPulse Edge AI analyzes machine temperature, vibration, power and load locally to identify abnormal operating conditions and prioritize maintenance actions. An OpenAI-compatible local inference adapter provides natural-language explanations without requiring the application architecture to be tied to a single cloud provider.
+### One-line pitch
 
-## AI components
-- Isolation Forest anomaly detection
-- Interpretable risk scoring
-- Energy-consumption monitoring
-- AI-generated maintenance explanations
-- Edge/local inference adapter
+FactoryPulse Edge turns machine telemetry into explainable maintenance priorities and energy-waste signals locally, so small factories can use AI without making cloud infrastructure a prerequisite.
 
-## Expected impact
-- Earlier identification of machine abnormalities
-- Reduced unplanned downtime
-- Better visibility into energy waste
-- Lower cloud dependency
-- Stronger privacy for industrial telemetry
+### Problem
 
-## Phase 2 direction
-When finalist access to Kompact AI Runtime is provided, the inference adapter will be configured to use the Kompact runtime as the core AI inference layer. The final challenge implementation will follow the official fresh-code and technology requirements.
+Many smaller factories have machine data but limited access to predictive-maintenance systems. Cloud-first AI can introduce recurring inference costs, connectivity dependence and data-sovereignty concerns.
 
-## Demo
-```bash
-pip install -r requirements.txt
-streamlit run app.py
-```
+### What we built
+
+FactoryPulse provides one operator workflow:
+
+**Detect → Explain → Prioritise → Save energy**
+
+It includes:
+- Multivariate Isolation Forest anomaly detection.
+- Rolling local baselines.
+- Interpretable maintenance-risk scoring.
+- Evidence-based probable-cause classification.
+- Energy baseline and excess-consumption estimation.
+- Six-machine factory-floor view.
+- Local anomaly-pipeline benchmark.
+- Optional OpenAI-compatible inference adapter.
+- Docker and automated smoke tests.
+
+### Why edge is the product
+
+The project does not merely put a cloud application on an edge device. Its default telemetry analysis is local. The AI explanation layer is isolated behind an inference adapter, allowing a CPU-local runtime to be used without changing the operator workflow.
+
+### What we intentionally do not claim
+
+We do not claim current Kompact performance, production energy savings, real factory failure rates, or real-world predictive accuracy. Those require measurement.
+
+### Phase 2 plan if selected
+
+Use the official Kompact AI Runtime as the core inference component and measure:
+- End-to-end latency.
+- CPU utilization.
+- Memory footprint.
+- Throughput.
+- Offline operation.
+- Explanation quality.
+- Cost/TCO implications.
+
+All Phase 2 implementation will follow the official fresh-code requirement.
+
+### Demo
+
+    pip install -r requirements.txt
+    streamlit run app.py
+
+### Repository
+
+https://github.com/jagadeesh1180/day-4
