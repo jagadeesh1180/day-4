@@ -1,67 +1,111 @@
-# FactoryPulse Edge AI
+# FactoryPulse Edge
 
-FactoryPulse Edge AI is a privacy-first factory intelligence prototype for small and medium-sized manufacturers.
+## Autonomous, privacy-first factory intelligence for MSMEs
 
-It combines:
-- Machine telemetry and energy signals
-- Explainable anomaly detection
-- Maintenance-risk scoring
-- Local AI explanations through an OpenAI-compatible inference endpoint
-- A dashboard designed for edge/CPU deployment
+FactoryPulse Edge turns machine telemetry into three things an operator can act on:
 
-## Why this matters
+1. **Machine health** — multivariate anomaly detection and interpretable risk scoring.
+2. **Maintenance intelligence** — evidence-backed likely-cause classification and action priority.
+3. **Energy intelligence** — local baselines and transparent estimates of abnormal consumption.
 
-Small factories often cannot justify expensive cloud AI infrastructure, while machine and production data can be sensitive. FactoryPulse Edge is designed around the idea that intelligence can run close to the machines.
+The default application works without a cloud AI service. The inference boundary is isolated so a local CPU inference runtime can be used without redesigning the product.
 
-The project is structured so the AI inference layer can be pointed at Kompact AI / SBox when access is available.
+## Why this project is different
 
-## Demo
+Generic AI assistants compete on model size and conversation quality. FactoryPulse competes on **where AI runs, what data it sees, and whether the decision can be acted on**.
 
-Run locally:
+The project is intentionally built around an MSME factory because smaller manufacturers need useful intelligence without assuming a GPU cluster, constant connectivity, or willingness to export sensitive production telemetry.
 
-```bash
-pip install -r requirements.txt
-streamlit run app.py
-```
+## Competitive research
 
-Optional AI endpoint:
+Public projects show that industrial edge AI is already a crowded technical area. Examples include:
+- A predictive-maintenance project using LightGBM, ONNX and a Streamlit dashboard.
+- A more elaborate platform combining Kafka, ONNX Runtime, PostgreSQL, Redis, RAG and an LLM incident agent.
+- MSME-focused projects combining offline predictive maintenance and energy optimization.
+- TinyML projects running vibration/fault detection on microcontrollers.
 
-```bash
-export AI_BASE_URL="http://localhost:8000/v1"
-export AI_API_KEY="your-key"
-export AI_MODEL="your-model"
-```
+FactoryPulse therefore does **not** claim novelty simply because it says "edge AI" or "predictive maintenance".
 
-If no AI endpoint is configured, the application still provides deterministic anomaly detection and maintenance recommendations.
+Our differentiation is the combination of:
+- A deliberately small MSME deployment target.
+- A single operator workflow: detect → explain → prioritise → save energy.
+- Local-first operation with no required AI API.
+- Transparent, inspectable risk logic instead of an unsupported "failure probability" claim.
+- Built-in local performance measurement.
+- An explicit inference adapter ready for the Kompact AI Runtime in Phase 2.
+- Evidence discipline: current measurements are separated from future Kompact measurements.
+
+## Product demo
+
+The dashboard shows:
+- Six simulated machines on a factory floor.
+- Health state and risk for each machine.
+- Temperature, vibration, power and load trends.
+- Anomaly queue.
+- Likely maintenance cause.
+- Energy waste table.
+- Local CPU anomaly-pipeline benchmark.
+- Privacy/edge architecture.
+
+Run:
+
+    pip install -r requirements.txt
+    streamlit run app.py
+
+Optional AI-compatible endpoint:
+
+    AI_BASE_URL=http://localhost:8000/v1
+    AI_MODEL=your-model
+    AI_API_KEY=your-key
+
+Without those variables, FactoryPulse still runs locally.
 
 ## Architecture
 
-```
-Machine / CSV telemetry
-        |
-        v
- Feature engineering
-        |
-        +----> Isolation Forest anomaly detection
-        |
-        +----> Energy efficiency scoring
-        |
-        v
- Risk engine
-        |
-        v
- AI explanation layer
-        |
-        v
- Factory dashboard
-```
+    Machine sensors / CSV
+             |
+             v
+    Local feature engineering
+             |
+             +--> Isolation Forest
+             |
+             +--> Interpretable risk engine
+             |
+             +--> Energy baseline engine
+             |
+             v
+       Maintenance reasoning
+             |
+             v
+       AI explanation adapter
+             |
+             v
+    Local CPU / future Kompact runtime
+             |
+             v
+       FactoryPulse UI
 
-## Hackathon positioning
+## Phase 1 / Phase 2 boundary
 
-FactoryPulse Edge is a portfolio project for Build Next 2026. The Phase 2 architecture is intentionally inference-provider agnostic, with an OpenAI-compatible adapter so the same application can use Kompact AI as the core inference runtime when finalist access is provided.
+Phase 1 is the portfolio project. The current repository contains the portfolio implementation.
 
-The application focuses on practical impact: early anomaly detection, energy waste visibility, maintenance prioritisation, and privacy-preserving deployment.
+If selected for Phase 2, the challenge-period implementation must follow the official fresh-code requirement and use the Kompact AI Runtime as a core component. We will then measure actual Kompact latency, CPU utilization, memory, throughput and offline behaviour rather than inventing benchmark numbers.
 
-## Important
+## Engineering quality
 
-This repository contains the original portfolio MVP. For the Build Next Phase 2 challenge, new challenge-period code should be written during the official challenge window and the Kompact AI Runtime should be used as required by the official rules.
+- Python 3.12
+- Streamlit
+- Pandas / NumPy
+- Scikit-learn Isolation Forest
+- Requests-based inference adapter
+- Dockerfile
+- Pytest smoke tests
+- Architecture and demo documentation
+
+## Evidence policy
+
+See DOES_NOT_CLAIM.md. FactoryPulse never presents simulated savings, synthetic telemetry or future Kompact benchmarks as real-world measurements.
+
+## License
+
+MIT
